@@ -1,0 +1,94 @@
+#!/usr/bin/env php
+<?php declare(strict_types = 1);
+
+use Nette\CodeChecker\Checker;
+use Nette\CodeChecker\Tasks;
+use Nette\CommandLine\Parser;
+use Ninjify\Checker\CustomTasks;
+
+(static function () {
+
+	set_exception_handler(static function (Throwable $e) {
+		echo "Error: {$e->getMessage()} in {$e->getFile()}:{$e->getLine()}\n";
+		die(2);
+	});
+	set_error_handler(static function (int $severity, string $message, string $file, int $line) {
+		if (($severity & error_reporting()) === $severity) {
+			throw new \ErrorException($message, 0, $severity, $file, $line);
+		}
+		return false;
+	});
+	set_time_limit(0);
+	gc_disable(); // performance boost
+
+	$autoload = is_file(__DIR__ . '/../vendor/autoload.php')
+		? __DIR__ . '/../vendor/autoload.php'
+		: __DIR__ . '/../../../autoload.php';
+	if (@!include $autoload) {
+		echo 'Install packages using `composer update`';
+		exit(1);
+	}
+
+	echo '
+Ninjify Checker
+-----------------------
+';
+
+	$cmd = new Parser(
+		<<<'XX'
+Usage:
+    vendor/bin/checker [options]
+
+Options:
+    -d <path>             Folder or file to scan (default: current directory)
+    -i | --ignore <mask>  Files to ignore
+    -f | --fix            Fixes files
+    --no-progress         Do not show progress dots
+
+
+XX
+		, [
+			'-d' => [Parser::REALPATH => true, Parser::VALUE => getcwd()],
+			'--ignore' => [Parser::REPEATABLE => true],
+		]
+	);
+
+	$options = $cmd->parse();
+	if ($cmd->isEmpty()) {
+		$cmd->help();
+	}
+
+	$checker = new Checker();
+
+	$checker->accept = [
+		'*.txt', '*.texy', '*.md',
+		'*.css', '*.less', '*.sass', '*.scss',
+		'*.js', '*.json', '*.vue', '*.ts',
+		'*.latte', '*.htm', '*.html', '*.phtml', '*.xml',
+		'*.ini', '*.neon', '*.yml', '*.yaml',
+		'*.sh', '*.bat',
+		'*.sql',
+		'.htaccess', '.gitignore',
+	];
+
+	foreach ($options['--ignore'] as $ignore) {
+		$checker->ignore[] = $ignore;
+	}
+	$checker->readOnly = !isset($options['--fix']);
+	$checker->showProgress = !isset($options['--no-progress']);
+
+	$checker->addTask([Tasks::class, 'controlCharactersChecker']);
+	$checker->addTask([Tasks::class, 'bomFixer']);
+	$checker->addTask([Tasks::class, 'utf8Checker']);
+	$checker->addTask([Tasks::class, 'newlineNormalizer'], '!*.sh');
+	$checker->addTask([Tasks::class, 'yamlIndentationChecker'], '*.yml,*yaml');
+	$checker->addTask([Tasks::class, 'neonSyntaxChecker'], '*.neon');
+	$checker->addTask([Tasks::class, 'jsonSyntaxChecker'], '*.json');
+	$checker->addTask([Tasks::class, 'trailingWhiteSpaceFixer']);
+	$checker->addTask([Tasks::class, 'unexpectedTabsChecker'], '*.yml,*.yaml');
+	$checker->addTask([CustomTasks::class, 'tabIndentationChecker'], '!*.yml,*.yaml,*.md');
+
+	$ok = $checker->run($options['-d']);
+
+	exit($ok ? 0 : 1);
+})();

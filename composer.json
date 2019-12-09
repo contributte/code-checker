@@ -1,0 +1,47 @@
+{
+  "name": "ninjify/checker",
+  "description": "nette/code-checker optimized for co-operation with our coding standard",
+  "keywords": ["nette", "code checker", "coding standard"],
+  "type": "library",
+  "license": "MPL-2.0",
+  "homepage": "https://github.com/ninjify/checker",
+  "authors": [
+    {
+      "name": "Marek Bartoš",
+      "homepage": "https://github.com/mabar"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "nette/code-checker": "~3.1.0"
+  },
+  "require-dev": {
+    "ninjify/qa": "^0.10.0",
+    "phpstan/extension-installer": "^1.0",
+    "phpstan/phpstan-deprecation-rules": "^0.11",
+    "phpstan/phpstan-shim": "^0.11",
+    "phpstan/phpstan-strict-rules": "^0.11",
+    "phpunit/phpunit": "^8.1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ninjify\\Checker\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Ninjify\\Checker\\": "tests/"
+    }
+  },
+  "bin": ["bin/checker"],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "0.1.x-dev"
+    }
+  }
+}
