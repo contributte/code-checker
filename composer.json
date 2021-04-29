@@ -1,36 +1,29 @@
 {
-  "name": "ninjify/checker",
+  "name": "contributte/code-checker",
   "description": "nette/code-checker optimized for co-operation with our coding standard",
   "keywords": ["nette", "code checker", "coding standard"],
   "type": "library",
-  "license": "MPL-2.0",
-  "homepage": "https://github.com/ninjify/checker",
+  "license": "MIT",
+  "homepage": "https://github.com/contributte/code-checker",
   "authors": [
     {
-      "name": "Marek Bartoš",
-      "homepage": "https://github.com/mabar"
+      "name": "Milan Felix Šulc",
+      "homepage": "https://f3l1x.io"
     }
   ],
   "require": {
-    "php": "^7.2",
-    "nette/code-checker": "~3.1.0"
+    "php": ">=7.2",
+    "nette/code-checker": "^3.1.0"
   },
   "require-dev": {
-    "ninjify/qa": "^0.10.0",
-    "phpstan/extension-installer": "^1.0",
-    "phpstan/phpstan-deprecation-rules": "^0.11",
-    "phpstan/phpstan-shim": "^0.11",
-    "phpstan/phpstan-strict-rules": "^0.11",
-    "phpunit/phpunit": "^8.1.0"
+    "ninjify/qa": "^0.12",
+    "phpstan/phpstan": "^0.12",
+    "phpstan/phpstan-deprecation-rules": "^0.12",
+    "phpstan/phpstan-strict-rules": "^0.12"
   },
   "autoload": {
     "psr-4": {
-      "Ninjify\\Checker\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\Ninjify\\Checker\\": "tests/"
+      "Contributte\\CodeChecker\\": "src/"
     }
   },
   "bin": ["bin/checker"],
