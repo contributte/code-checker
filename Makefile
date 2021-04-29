@@ -1,29 +1,19 @@
-.PHONY: qa lint cs csf phpstan tests coverage
+.PHONY: install qa cs csf phpstan
 
-all:
-	@awk 'BEGIN {FS = ":.*##"; printf "Usage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"}'
-	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
+install:
+	composer update
 
-# QA
+qa: phpstan cs
 
-qa: lint phpstan cs ## Check code quality - coding style and static analysis
+cs:
+ifdef GITHUB_ACTION
+	vendor/bin/codesniffer -q --report=checkstyle src  | cs2pr
+else
+	vendor/bin/codesniffer src
+endif
 
-lint: ## Check PHP files syntax
-	vendor/bin/linter src tests
+csf:
+	vendor/bin/codefixer src
 
-cs: ## Check PHP files coding style
-	vendor/bin/codesniffer src tests
-
-csf: ## Fix PHP files coding style
-	vendor/bin/codefixer src tests
-
-phpstan: ## Analyse code with PHPStan
+phpstan:
 	vendor/bin/phpstan analyse -l max -c phpstan.neon src
-
-# Tests
-
-tests: ## Run all tests
-	vendor/bin/phpunit tests --cache-result-file=tests/tmp/phpunit.cache --colors=always
-
-coverage: ## Generate code coverage in XML format
-	phpdbg -qrr vendor/bin/phpunit tests --cache-result-file=tests/tmp/phpunit.cache --colors=always -c tests/coverage.xml

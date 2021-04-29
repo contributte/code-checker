@@ -1,10 +1,10 @@
 #!/usr/bin/env php
 <?php declare(strict_types = 1);
 
+use Contributte\CodeChecker\CustomTasks;
 use Nette\CodeChecker\Checker;
 use Nette\CodeChecker\Tasks;
 use Nette\CommandLine\Parser;
-use Ninjify\Checker\CustomTasks;
 
 (static function () {
 
@@ -30,7 +30,7 @@ use Ninjify\Checker\CustomTasks;
 	}
 
 	echo '
-Ninjify Checker
+Contributte Checker
 -----------------------
 ';
 
