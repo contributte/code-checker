@@ -1,7 +1,11 @@
 {
   "name": "contributte/code-checker",
   "description": "nette/code-checker optimized for co-operation with our coding standard",
-  "keywords": ["nette", "code checker", "coding standard"],
+  "keywords": [
+    "nette",
+    "code checker",
+    "coding standard"
+  ],
   "type": "library",
   "license": "MIT",
   "homepage": "https://github.com/contributte/code-checker",
@@ -26,7 +30,9 @@
       "Contributte\\CodeChecker\\": "src/"
     }
   },
-  "bin": ["bin/checker"],
+  "bin": [
+    "bin/checker"
+  ],
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
