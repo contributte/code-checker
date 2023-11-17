@@ -17,7 +17,7 @@
   ],
   "require": {
     "php": ">=8.1",
-    "nette/code-checker": "^3.1.0"
+    "nette/code-checker": "^3.3.2"
   },
   "require-dev": {
     "contributte/qa": "^0.4",
