@@ -1,19 +1,26 @@
-.PHONY: install qa cs csf phpstan
-
+.PHONY: install
 install:
 	composer update
 
+.PHONY: qa
 qa: phpstan cs
 
+.PHONY: cs
 cs:
 ifdef GITHUB_ACTION
-	vendor/bin/codesniffer -q --report=checkstyle src  | cs2pr
+	vendor/bin/phpcs --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp -q --report=checkstyle src tests | cs2pr
 else
-	vendor/bin/codesniffer src
+	vendor/bin/phpcs --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp src tests
 endif
 
+.PHONY: csf
 csf:
-	vendor/bin/codefixer src
+	vendor/bin/phpcbf --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp src tests
 
+.PHONY: phpstan
 phpstan:
-	vendor/bin/phpstan analyse -l max -c phpstan.neon src
+	vendor/bin/phpstan analyse -c phpstan.neon
+
+.PHONY: tests
+tests:
+	echo "OK"
