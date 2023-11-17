@@ -9,8 +9,9 @@ final class CustomTasks
 
 	public static function tabIndentationChecker(string $contents, Result $result, ?string $origContents = null): void
 	{
-		$origContents = $origContents ?? $contents;
+		$origContents ??= $contents;
 
+		// @phpstan-ignore-next-line
 		if (preg_match('#^(\t*+)\ (?!\*)\s*#m', $contents, $m, PREG_OFFSET_CAPTURE) && !$m[1][0]) {
 			$result->error(
 				'Used space to indent instead of tab',
@@ -21,7 +22,7 @@ final class CustomTasks
 
 	private static function offsetToLine(string $s, int $offset): int
 	{
-		return $offset ? substr_count($s, "\n", 0, $offset) + 1 : 1;
+		return $offset !== 0 ? substr_count($s, "\n", 0, $offset) + 1 : 1;
 	}
 
 }
