@@ -8,14 +8,14 @@ qa: phpstan cs
 .PHONY: cs
 cs:
 ifdef GITHUB_ACTION
-	vendor/bin/phpcs --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp -q --report=checkstyle src | cs2pr
+	vendor/bin/phpcs --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp -q --report=checkstyle src tests | cs2pr
 else
-	vendor/bin/phpcs --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp src
+	vendor/bin/phpcs --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp src tests
 endif
 
 .PHONY: csf
 csf:
-	vendor/bin/phpcbf --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp src
+	vendor/bin/phpcbf --standard=ruleset.xml --encoding=utf-8 --extensions="php,phpt" --colors -nsp src tests
 
 .PHONY: phpstan
 phpstan:
@@ -23,4 +23,12 @@ phpstan:
 
 .PHONY: tests
 tests:
-	echo "OK"
+	vendor/bin/tester -s -p php --colors 1 -C tests/Cases
+
+.PHONY: coverage
+coverage:
+ifdef GITHUB_ACTION
+	vendor/bin/tester -s -p phpdbg --colors 1 -C --coverage coverage.xml --coverage-src src tests/Cases
+else
+	vendor/bin/tester -s -p phpdbg --colors 1 -C --coverage coverage.html --coverage-src src tests/Cases
+endif
